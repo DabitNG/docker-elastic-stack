@@ -71,8 +71,4 @@ else
     echo "No additional dependencies"
 fi
 
-echo "docker-compose -p "${COMPOSE_PROJECT}${cmd}" config > docker-compose.yml"
-docker-compose -p "${COMPOSE_PROJECT}${cmd}" config > docker-compose.yml
-
-exit 0
-
+docker-compose ${cmd} config > docker-compose.yml && docker-compose -p ${COMPOSE_PROJECT} up
