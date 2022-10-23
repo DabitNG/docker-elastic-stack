@@ -1,4 +1,6 @@
 #!/bin/bash
+
+cp .env.template .env
 source ./.env
 
 nodes=${ES_NODES}
