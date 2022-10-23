@@ -1,0 +1,32 @@
+version: "3.7"
+
+services:
+  setup:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    volumes:
+      - ./setup:/tmp/setup
+      - certs:/usr/share/elasticsearch/config/certs
+    user: "0"
+    env_file:
+      - ./.env
+    command: bash -c "/tmp/setup/setup.sh"
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f config/certs/es01/es01.crt ]" ]
+      interval: 1s
+      timeout: 5s
+      retries: 120
+  cerebro:
+    user: root
+    image: lmenezes/cerebro:${CEREBRO_VERSION}
+    volumes:
+      - ./cerebro/application.conf:/opt/cerebro/conf/application.conf
+      - certs:/certs
+    ports:
+      - ${CEREBRO_PORT}:9000
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+
+volumes:
+  certs:
+    driver: local
